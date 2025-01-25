@@ -1,2 +1,2 @@
-# photo-cifu
+# Photo Cifu
 Client Photo Gallery for Modern Photographers.
