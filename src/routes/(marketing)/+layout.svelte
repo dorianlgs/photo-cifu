@@ -17,7 +17,7 @@
 		<ul class="menu menu-horizontal px-1 hidden sm:flex font-bold text-lg">
 			<li class="md:mx-2"><a href="/blog">Blog</a></li>
 			<li class="md:mx-2"><a href="/pricing">Pricing</a></li>
-			<!-- <li class="md:mx-2"><a href="/account">Account</a></li> -->
+			<li class="md:mx-2"><a href="/account">Account</a></li>
 			<li class="md:mx-0">
 				<a href="/search" aria-label="Search">
 					<svg fill="#000000" class="w-6 h-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
