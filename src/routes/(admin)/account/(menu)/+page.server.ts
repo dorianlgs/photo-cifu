@@ -6,12 +6,9 @@ export const load = async ({ locals }) => {
     throw redirect(303, '/login');
   }
 
-  // GET USERS
   const users = await locals.pb.collection('users').getFullList({
     sort: '-created'
   });
 
-  console.log({ users })
-
-  return { users: users };
+  return { users: users, user: locals.user };
 };
