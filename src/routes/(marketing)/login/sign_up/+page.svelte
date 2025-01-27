@@ -5,6 +5,19 @@
 	let unsubscribe: () => void;
 
 	onMount(async () => {
+		// try {
+		// 	const record = await pb.collection('users').create({
+		// 		email: 'lol@lol.com',
+		// 		name: 'Test',
+		// 		password: 'Abc.1234',
+		// 		passwordConfirm: 'Abc.1234'
+		// 	});
+
+		// 	console.log({ record });
+		// } catch (err) {
+		// 	console.log({ err });
+		// }
+
 		unsubscribe = await pb.collection('messages').subscribe('*', (newData) => {
 			console.log({ newData });
 		});

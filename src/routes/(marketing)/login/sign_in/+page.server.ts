@@ -1,4 +1,5 @@
-import { fail, error, redirect } from "@sveltejs/kit"
+import { fail, redirect, error } from "@sveltejs/kit"
+import { ClientResponseError } from "pocketbase"
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -25,6 +26,7 @@ export const actions = {
         }
 
         try {
+
             await locals.pb.collection('users').authWithPassword(email, password);
             if (!locals.pb?.authStore?.record) {
                 locals.pb.authStore.clear();
@@ -32,13 +34,17 @@ export const actions = {
                     notVerified: true
                 };
             }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            console.log('Error: ', err);
-            throw error(err.status, err.message);
+            if (err instanceof ClientResponseError) {
+                if (err.response.message === "Failed to authenticate.") {
+                    errors["loginResult"] = "The Email or Password is Incorrect. Try again."
+                    return fail(400, { errors })
+                }
+
+                throw error(err.status, err.message);
+            }
         }
 
         throw redirect(303, '/account');
-
-    },
+    }
 }
