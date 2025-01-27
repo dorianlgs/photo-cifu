@@ -17,7 +17,7 @@
 	<title>Account</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold mb-1">Dashboard</h1>
+<h1 class="text-2xl font-bold mb-1">Dashboard - {data?.user?.name}</h1>
 <div class="alert alert-error max-w-lg mt-2">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"

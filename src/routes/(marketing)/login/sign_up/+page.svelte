@@ -1,3 +1,20 @@
+<script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { pb } from '$lib/pocketbase';
+
+	let unsubscribe: () => void;
+
+	onMount(async () => {
+		unsubscribe = await pb.collection('messages').subscribe('*', (newData) => {
+			console.log({ newData });
+		});
+	});
+
+	onDestroy(() => {
+		if (unsubscribe) unsubscribe();
+	});
+</script>
+
 <svelte:head>
 	<title>Sign up</title>
 </svelte:head>
