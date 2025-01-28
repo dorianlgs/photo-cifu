@@ -9,7 +9,7 @@
 	let loading = $state(false);
 	let emailInput: HTMLInputElement | undefined = $state();
 
-	const handleSubmit2 = async (e: SubmitEvent) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		const formData = new FormData(e.target as HTMLFormElement);
 
 		const email = formData.get('email')?.toString() ?? '';
@@ -99,7 +99,7 @@
 <br />
 <hr class="solid" />
 <br />
-<form class="form-widget flex flex-col" onsubmit={handleSubmit2}>
+<form class="form-widget flex flex-col" onsubmit={handleSubmit}>
 	<label for={'email'}>
 		<div class="flex flex-row">
 			<div class="text-base font-bold">{'Email address'}</div>
