@@ -1,23 +1,17 @@
 <script lang="ts">
-	import { pb } from '$lib/pocketbase';
-	import { goto } from '$app/navigation';
 	import { currentUser } from '$lib/stores/user';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
 	let adminSection: Writable<string> = getContext('adminSection');
 	adminSection.set('home');
-
-	if (!pb.authStore.isValid) {
-		goto('/login');
-	}
 </script>
 
 <svelte:head>
 	<title>Account</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold mb-1">Dashboard - {$currentUser.name}</h1>
+<h1 class="text-2xl font-bold mb-1">Dashboard - {$currentUser?.name}</h1>
 <div class="alert alert-error max-w-lg mt-2">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"

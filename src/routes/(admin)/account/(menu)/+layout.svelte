@@ -30,6 +30,10 @@
 		pb.authStore.clear();
 		goto('/');
 	}
+
+	if (!pb.authStore.isValid) {
+		goto('/login');
+	}
 </script>
 
 <div class="drawer lg:drawer-open">
