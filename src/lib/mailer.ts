@@ -27,10 +27,10 @@ export const sendAdminEmail = async ({
         })
 
         if (resp.error) {
-            console.log("Failed to send admin email, error:", resp.error)
+
         }
     } catch (e) {
-        console.log("Failed to send admin email, error:", e)
+
     }
 }
 
@@ -79,10 +79,7 @@ export const sendTemplatedEmail = async ({
     }
 
     if (!plaintextBody && !htmlBody) {
-        console.log(
-            "No email body: requires plaintextBody or htmlBody. Template: ",
-            template_name,
-        )
+
         return
     }
 
@@ -103,9 +100,9 @@ export const sendTemplatedEmail = async ({
         const resp = await resend.emails.send(email)
 
         if (resp.error) {
-            console.log("Failed to send email, error:", resp.error)
+
         }
     } catch (e) {
-        console.log("Failed to send email, error:", e)
+
     }
 }

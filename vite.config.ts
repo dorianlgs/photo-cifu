@@ -11,7 +11,6 @@ export default defineConfig({
                 order: "post",
                 sequential: false,
                 handler: async () => {
-                    console.log("Building search index...")
                     await buildAndCacheSearchIndex()
                 },
             },

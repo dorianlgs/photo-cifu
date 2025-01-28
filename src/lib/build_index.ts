@@ -50,7 +50,7 @@ export async function buildSearchIndex() {
                 path: webPath,
             })
         } catch (e) {
-            console.log("Blog search indexing error", file, e)
+
         }
     }
 
@@ -73,5 +73,5 @@ export async function buildAndCacheSearchIndex() {
         path.resolve("./.svelte-kit/output/client/search/api.json"),
         JSON.stringify(data),
     )
-    console.log("Search index built")
+
 }

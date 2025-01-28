@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
+	import { pb } from '$lib/pocketbase';
+	import { goto } from '$app/navigation';
+	import { currentUser } from '$lib/stores/user';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
 	let adminSection: Writable<string> = getContext('adminSection');
 	adminSection.set('home');
 
-	interface Props {
-		data: PageData;
+	if (!pb.authStore.isValid) {
+		goto('/login');
 	}
-
-	let { data }: Props = $props();
 </script>
 
 <svelte:head>
 	<title>Account</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold mb-1">Dashboard - {data?.user?.name}</h1>
+<h1 class="text-2xl font-bold mb-1">Dashboard - {$currentUser.name}</h1>
 <div class="alert alert-error max-w-lg mt-2">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@
 
 		<div class="stat place-items-center">
 			<div class="stat-title">Users</div>
-			<div class="stat-value text-secondary">{data?.users?.length}</div>
+			<div class="stat-value text-secondary">4,200</div>
 			<div class="stat-desc">↗︎ 40 (2%)</div>
 		</div>
 	</div>

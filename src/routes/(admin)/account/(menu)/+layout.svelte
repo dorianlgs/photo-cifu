@@ -12,7 +12,7 @@
 		user: AuthRecord;
 	}
 
-	let { children, user }: Props = $props();
+	let { children }: Props = $props();
 
 	const adminSectionStore = writable('');
 	setContext('adminSection', adminSectionStore);
@@ -30,8 +30,6 @@
 		pb.authStore.clear();
 		goto('/');
 	}
-
-	console.log({ user });
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -138,17 +136,9 @@
 			</li>
 
 			<li class="mt-auto">
-				<form
-					class="flex w-full py-2"
-					method="POST"
-					action="/account/sign_out"
-					onsubmit={handleLogout}
-					aria-label="Logout"
-				>
-					<button type="submit" class="flex w-full items-center">
-						<span>Sign Out</span>
-					</button>
-				</form>
+				<button class="flex w-full items-center" onclick={handleLogout}>
+					<span>Sign Out</span>
+				</button>
 			</li>
 		</ul>
 	</div>

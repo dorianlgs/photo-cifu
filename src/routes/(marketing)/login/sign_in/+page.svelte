@@ -1,31 +1,49 @@
 <script lang="ts">
+	import { ClientResponseError } from 'pocketbase';
 	import { pb } from '$lib/pocketbase';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { enhance, applyAction } from '$app/forms';
-	import { redirect, type SubmitFunction } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 
 	let errors: { [fieldName: string]: string } = $state({});
 	let loading = $state(false);
-	let emailInput: HTMLTextAreaElement | undefined = $state();
+	let emailInput: HTMLInputElement | undefined = $state();
 
-	const handleSubmit: SubmitFunction = () => {
-		loading = true;
-		errors = {};
-		return async ({ update, result }) => {
-			await update({ reset: false });
-			await applyAction(result);
-			loading = false;
+	const handleSubmit2 = async (e: SubmitEvent) => {
+		const formData = new FormData(e.target as HTMLFormElement);
 
-			if (result.type === 'success') {
-				redirect(303, '/account');
-			} else if (result.type === 'failure') {
-				errors = result.data?.errors ?? {};
-			} else if (result.type === 'error') {
-				errors = { _: 'An error occurred. Please check inputs and try again.' };
+		const email = formData.get('email')?.toString() ?? '';
+		if (email.length < 6) {
+			errors['email'] = 'Email is required';
+		} else if (email.length > 500) {
+			errors['email'] = 'Email too long';
+		} else if (!email.includes('@') || !email.includes('.')) {
+			errors['email'] = 'Invalid email';
+		}
+		const password = formData.get('password')?.toString() ?? '';
+		if (password.length > 500) {
+			errors['password'] = 'Password too long';
+		}
+
+		try {
+			await pb.collection('users').authWithPassword(email, password);
+			if (!pb?.authStore?.record) {
+				pb.authStore.clear();
+				return {
+					notVerified: true
+				};
 			}
-		};
+		} catch (err: any) {
+			if (err instanceof ClientResponseError) {
+				if (err.response.message === 'Failed to authenticate.') {
+					errors['loginResult'] = 'The Email or Password is Incorrect. Try again.';
+				}
+			}
+
+			return;
+		}
+
+		goto('/account');
 	};
 
 	onMount(() => {
@@ -81,7 +99,7 @@
 <br />
 <hr class="solid" />
 <br />
-<form class="form-widget flex flex-col" method="POST" action="?/signIn" use:enhance={handleSubmit}>
+<form class="form-widget flex flex-col" onsubmit={handleSubmit2}>
 	<label for={'email'}>
 		<div class="flex flex-row">
 			<div class="text-base font-bold">{'Email address'}</div>
