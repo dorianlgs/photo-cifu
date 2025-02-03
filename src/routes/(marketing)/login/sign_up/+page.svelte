@@ -16,13 +16,17 @@
 
 		const formData = new FormData(e.target as HTMLFormElement);
 
+		const _email = formData.get('email') as string;
+
 		await pb.collection('users').create({
-			email: formData.get('email'),
+			email: _email,
 			name: formData.get('name'),
 			password: formData.get('password'),
 			passwordConfirm: formData.get('password'),
 			avatar: formData.get('avatar')
 		});
+
+		await pb.collection('users').requestVerification(_email);
 
 		goto(`/login/sign_in?not_verified=true`);
 	};

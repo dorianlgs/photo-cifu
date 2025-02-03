@@ -1,6 +1,4 @@
 <script>
-	let avatarInput = $state();
-
 	let { errors } = $props();
 </script>
 
@@ -8,16 +6,9 @@
 	id={'avatar'}
 	name={'avatar'}
 	type={'file'}
-	bind:this={avatarInput}
 	placeholder={'Upload an avatar'}
 	class="{errors['avatar'] ? 'input-error' : ''} input-md"
 />
-{#if avatarInput}
-	<h2>Selected files:</h2>
-	{#each Array.from(avatarInput) as file}
-		<p>{file.name} ({file.size} bytes)</p>
-	{/each}
-{/if}
 
 <style>
 	/* file upload button */
