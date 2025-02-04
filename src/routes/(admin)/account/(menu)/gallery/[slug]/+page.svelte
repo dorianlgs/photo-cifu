@@ -36,3 +36,9 @@
 		{/each}
 	</div>
 {/if}
+
+<style>
+	img {
+		padding: 20px;
+	}
+</style>
