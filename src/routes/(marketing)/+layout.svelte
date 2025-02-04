@@ -54,7 +54,7 @@
 			>
 				<li><a href="/blog">Blog</a></li>
 				<li><a href="/pricing">Pricing</a></li>
-				<!-- <li><a href="/account">Account</a></li> -->
+				<li><a href="/account">Account</a></li>
 				<li><a href="/search">Search</a></li>
 			</ul>
 		</div>
