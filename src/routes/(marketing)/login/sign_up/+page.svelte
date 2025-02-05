@@ -10,25 +10,30 @@
 	let emailInput: HTMLInputElement | undefined = $state();
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
+		try {
+			loading = true;
+			e.preventDefault();
+			errors = {};
 
-		errors = {};
+			const formData = new FormData(e.target as HTMLFormElement);
 
-		const formData = new FormData(e.target as HTMLFormElement);
+			const _email = formData.get('email') as string;
 
-		const _email = formData.get('email') as string;
+			await pb.collection('users').create({
+				email: _email,
+				name: formData.get('name'),
+				password: formData.get('password'),
+				passwordConfirm: formData.get('password'),
+				avatar: formData.get('avatar')
+			});
 
-		await pb.collection('users').create({
-			email: _email,
-			name: formData.get('name'),
-			password: formData.get('password'),
-			passwordConfirm: formData.get('password'),
-			avatar: formData.get('avatar')
-		});
+			await pb.collection('users').requestVerification(_email);
 
-		await pb.collection('users').requestVerification(_email);
-
-		goto(`/login/sign_in?not_verified=true`);
+			goto(`/login/sign_in?not_verified=true`);
+		} catch (err) {
+		} finally {
+			loading = false;
+		}
 	};
 
 	onMount(() => {
@@ -128,7 +133,9 @@
 		{/if}
 	{/if}
 
-	<button type={'submit'} class="btn btn-primary {loading ? 'btn-disabled' : ''}">Sign up</button>
+	<button disabled={loading} type={'submit'} class="btn btn-primary {loading ? 'btn-disabled' : ''}"
+		>Sign up</button
+	>
 </form>
 <div class="text-l text-slate-800 mt-4 mb-2">
 	Have an account? <a class="underline" href="/login/sign_in">Sign in</a>

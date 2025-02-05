@@ -52,54 +52,60 @@
 	];
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
+		try {
+			loading = true;
+			e.preventDefault();
 
-		errors = {};
+			errors = {};
 
-		const formData = new FormData(e.target as HTMLFormElement);
+			const formData = new FormData(e.target as HTMLFormElement);
 
-		const firstName = formData.get('first_name')?.toString() ?? '';
-		if (firstName.length < 2) {
-			errors['first_name'] = 'First name is required';
-		}
-		if (firstName.length > 500) {
-			errors['first_name'] = 'First name too long';
-		}
+			const firstName = formData.get('first_name')?.toString() ?? '';
+			if (firstName.length < 2) {
+				errors['first_name'] = 'First name is required';
+			}
+			if (firstName.length > 500) {
+				errors['first_name'] = 'First name too long';
+			}
 
-		const lastName = formData.get('last_name')?.toString() ?? '';
-		if (lastName.length < 2) {
-			errors['last_name'] = 'Last name is required';
-		}
-		if (lastName.length > 500) {
-			errors['last_name'] = 'Last name too long';
-		}
+			const lastName = formData.get('last_name')?.toString() ?? '';
+			if (lastName.length < 2) {
+				errors['last_name'] = 'Last name is required';
+			}
+			if (lastName.length > 500) {
+				errors['last_name'] = 'Last name too long';
+			}
 
-		const email = formData.get('email')?.toString() ?? '';
-		if (email.length < 6) {
-			errors['email'] = 'Email is required';
-		} else if (email.length > 500) {
-			errors['email'] = 'Email too long';
-		} else if (!email.includes('@') || !email.includes('.')) {
-			errors['email'] = 'Invalid email';
-		}
+			const email = formData.get('email')?.toString() ?? '';
+			if (email.length < 6) {
+				errors['email'] = 'Email is required';
+			} else if (email.length > 500) {
+				errors['email'] = 'Email too long';
+			} else if (!email.includes('@') || !email.includes('.')) {
+				errors['email'] = 'Invalid email';
+			}
 
-		const company = formData.get('company')?.toString() ?? '';
-		if (company.length > 500) {
-			errors['company'] = 'Company too long';
-		}
+			const company = formData.get('company')?.toString() ?? '';
+			if (company.length > 500) {
+				errors['company'] = 'Company too long';
+			}
 
-		const phone = formData.get('phone')?.toString() ?? '';
-		if (phone.length > 100) {
-			errors['phone'] = 'Phone number too long';
-		}
+			const phone = formData.get('phone')?.toString() ?? '';
+			if (phone.length > 100) {
+				errors['phone'] = 'Phone number too long';
+			}
 
-		const message = formData.get('message')?.toString() ?? '';
-		if (message.length > 2000) {
-			errors['message'] = 'Message too long (' + message.length + ' of 2000)';
-		}
+			const message = formData.get('message')?.toString() ?? '';
+			if (message.length > 2000) {
+				errors['message'] = 'Message too long (' + message.length + ' of 2000)';
+			}
 
-		if (Object.keys(errors).length > 0) {
-			return;
+			if (Object.keys(errors).length > 0) {
+				return;
+			}
+		} catch (err) {
+		} finally {
+			loading = false;
 		}
 	};
 </script>
@@ -177,7 +183,10 @@
 						<p class="text-red-600 text-sm mb-2">Please resolve above issues.</p>
 					{/if}
 
-					<button type="submit" class="btn btn-primary {loading ? 'btn-disabled' : ''}"
+					<button
+						disabled={loading}
+						type="submit"
+						class="btn btn-primary {loading ? 'btn-disabled' : ''}"
 						>{loading ? 'Submitting' : 'Submit'}</button
 					>
 				</form>

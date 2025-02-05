@@ -17,6 +17,7 @@
 </script>
 
 <button
+	disabled={loading}
 	aria-label="Sign in with Github"
 	class="btn btn-github {loading ? 'btn-disabled' : ''}"
 	onclick={handleClick}

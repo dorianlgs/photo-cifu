@@ -4,11 +4,13 @@
 	import type { RecordModel } from 'pocketbase';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import LikeButton from '$lib/components/LikeButton.svelte';
 
 	interface Image {
 		collectionId: string;
 		id: string;
 		image: string;
+		likes: number;
 	}
 
 	let { slug: galleryId } = page.params;
@@ -29,14 +31,17 @@
 
 {#if gallery}
 	<div class="carousel rounded-box">
-		{#each images as image}
-			<div class="carousel-item">
-				<img
-					src="{PUBLIC_POCKETBASE_URL}/api/files/{image.collectionId}/{image.id}/{image.image}"
-					alt="Burger"
-					height="400px"
-					width="450px"
-				/>
+		{#each images as image, i}
+			<div>
+				<div class="carousel-item">
+					<img
+						src="{PUBLIC_POCKETBASE_URL}/api/files/{image.collectionId}/{image.id}/{image.image}"
+						alt="Burger"
+						height="400px"
+						width="450px"
+					/>
+				</div>
+				<LikeButton image={images[i]} />
 			</div>
 		{/each}
 	</div>

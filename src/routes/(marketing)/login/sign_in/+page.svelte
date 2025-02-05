@@ -11,6 +11,7 @@
 	let emailInput: HTMLInputElement | undefined = $state();
 
 	const handleSubmit = async (e: SubmitEvent) => {
+		loading = true;
 		const formData = new FormData(e.target as HTMLFormElement);
 
 		const email = formData.get('email')?.toString() ?? '';
@@ -42,6 +43,8 @@
 			}
 
 			return;
+		} finally {
+			loading = false;
 		}
 
 		goto('/account');
@@ -146,7 +149,8 @@
 		{/if}
 	{/if}
 
-	<button class="btn btn-primary {loading ? 'btn-disabled' : ''}">Sign in</button>
+	<button disabled={loading} class="btn btn-primary {loading ? 'btn-disabled' : ''}">Sign in</button
+	>
 </form>
 
 <div class="text-l text-slate-800 mt-4">
