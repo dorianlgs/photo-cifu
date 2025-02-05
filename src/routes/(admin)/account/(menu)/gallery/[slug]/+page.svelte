@@ -3,13 +3,18 @@
 	import { pb } from '$lib/pocketbase';
 	import type { RecordModel } from 'pocketbase';
 	import { onMount } from 'svelte';
-
 	import { page } from '$app/state';
+
+	interface Image {
+		collectionId: string;
+		id: string;
+		image: string;
+	}
 
 	let { slug: galleryId } = page.params;
 
 	let gallery: RecordModel | undefined = $state();
-	let images: string[] = $state([]);
+	let images: Image[] = $state([]);
 
 	onMount(async () => {
 		const _gallery = await pb.collection('galleries').getOne(galleryId, { expand: 'images' });
@@ -24,10 +29,10 @@
 
 {#if gallery}
 	<div class="carousel rounded-box">
-		{#each images as item}
+		{#each images as image}
 			<div class="carousel-item">
 				<img
-					src="{PUBLIC_POCKETBASE_URL}/api/files/{item.collectionId}/{item.id}/{item.image}"
+					src="{PUBLIC_POCKETBASE_URL}/api/files/{image.collectionId}/{image.id}/{image.image}"
 					alt="Burger"
 					height="400px"
 					width="450px"

@@ -3,6 +3,15 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import '../../../../app.css';
 
+	interface FormAccountUpdateResult {
+		errorMessage?: string;
+		errorFields?: string[];
+		fullName?: string;
+		companyName?: string;
+		website?: string;
+		email?: string;
+	}
+
 	interface User {
 		email: string;
 	}

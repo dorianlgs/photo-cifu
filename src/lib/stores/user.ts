@@ -1,6 +1,6 @@
-import type { Admin, Record } from 'pocketbase'
+import type { AuthRecord } from 'pocketbase'
 import { writable } from 'svelte/store'
 
-export const currentUser = writable<Record | Admin | null>()
+export const currentUser = writable<AuthRecord | null>()
 
 export const welcomeMessage = writable<boolean>(false)
