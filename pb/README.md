@@ -15,3 +15,11 @@
 ## Module creation
 
 `go mod init github.com/shujink0/photo-cifu`
+
+## Change target OS
+
+`$env:GOOS = "linux"`
+
+### or
+
+`$env:GOOS = "windows"`

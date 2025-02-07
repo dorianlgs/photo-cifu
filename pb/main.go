@@ -10,7 +10,6 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/plugins/ghupdate"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 )
@@ -98,9 +97,6 @@ func main() {
 		Automigrate:  automigrate,
 		Dir:          migrationsDir,
 	})
-
-	// GitHub selfupdate
-	ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{})
 
 	// static route to serves files from the provided public dir
 	// (if publicDir exists and the route path is not already defined)
