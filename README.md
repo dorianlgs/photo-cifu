@@ -17,7 +17,7 @@ go run . serve
 ```bash
 $env:GOOS = "linux"
 go generate ./...
-go build
+go build -ldflags "-s -w"
 
 ./photo-cifu serve
 ```
