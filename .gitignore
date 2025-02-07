@@ -4,3 +4,5 @@ pb_public
 *.exe
 photo-cifu
 /build
+
+*.sqlite

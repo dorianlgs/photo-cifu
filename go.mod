@@ -2,7 +2,11 @@ module github.com/shujink0/photo-cifu
 
 go 1.23.4
 
-require github.com/pocketbase/pocketbase v0.25.0
+require (
+	github.com/cschleiden/go-workflows v0.19.0
+	github.com/google/uuid v1.6.0
+	github.com/pocketbase/pocketbase v0.25.0
+)
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -25,27 +29,44 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.12 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.11 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/domodwyer/mailyak/v3 v3.6.2 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/ganigeorgiev/fexpr v0.4.1 // indirect
+	github.com/go-errors/errors v1.4.2 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	github.com/golang-migrate/migrate/v4 v4.16.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jellydator/ttlcache/v3 v3.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pocketbase/dbx v1.11.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
+	go.opentelemetry.io/otel v1.32.0 // indirect
+	go.opentelemetry.io/otel/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.32.0 // indirect
+	go.opentelemetry.io/otel/trace v1.32.0 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
 	gocloud.dev v0.40.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.23.0 // indirect
@@ -59,6 +80,7 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250127172529-29210b9bc287 // indirect
 	google.golang.org/grpc v1.70.0 // indirect
 	google.golang.org/protobuf v1.36.4 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	modernc.org/libc v1.55.3 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.8.2 // indirect

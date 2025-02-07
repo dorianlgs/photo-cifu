@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/cschleiden/go-workflows/backend"
+	"github.com/cschleiden/go-workflows/backend/sqlite"
+	"github.com/cschleiden/go-workflows/client"
+	"github.com/google/uuid"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -14,6 +19,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/hook"
 
 	"github.com/shujink0/photo-cifu/ui"
+	"github.com/shujink0/photo-cifu/workflow"
 )
 
 const StaticWildcardParam = "path"
@@ -122,6 +128,21 @@ func main() {
 				return e.JSON(http.StatusOK, map[string]bool{"success": true})
 			}).Bind(apis.RequireAuth())
 
+			ctx := context.Background()
+
+			b := sqlite.NewSqliteBackend("pb_data/wofkflow.db", sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
+
+			go workflow.RunWorker(ctx, b)
+
+			c := client.New(b)
+
+			_, err := c.CreateWorkflowInstance(ctx, client.WorkflowInstanceOptions{
+				InstanceID: uuid.NewString(),
+			}, workflow.Workflow1, "input-for-workflow")
+			if err != nil {
+				panic("could not start workflow")
+			}
+
 			return e.Next()
 		},
 		Priority: 999, // execute as latest as possible to allow users to provide their own route
@@ -130,6 +151,7 @@ func main() {
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 // the default pb_public dir location is relative to the executable
