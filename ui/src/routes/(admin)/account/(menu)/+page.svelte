@@ -18,11 +18,9 @@
 
 		galleries = _galleries;
 
-		const result = await pb.send('/api/photocifu/settings', {
-			method: 'POST'
-		});
-
-		console.log({ result });
+		// const result = await pb.send('/api/photocifu/settings', {
+		// 	method: 'POST'
+		// });
 	});
 </script>
 

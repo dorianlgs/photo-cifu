@@ -12,7 +12,11 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
+
+	"github.com/shujink0/photo-cifu/ui"
 )
+
+const StaticWildcardParam = "path"
 
 func main() {
 	app := pocketbase.New()
@@ -102,9 +106,17 @@ func main() {
 	// (if publicDir exists and the route path is not already defined)
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(e *core.ServeEvent) error {
-			if !e.Router.HasRoute(http.MethodGet, "/{path...}") {
-				e.Router.GET("/{path...}", apis.Static(os.DirFS(publicDir), indexFallback))
-			}
+
+			e.Router.GET("/{path...}", apis.Static(ui.DistDirFS, false)).
+				BindFunc(func(e *core.RequestEvent) error {
+					// ignore root path
+					if e.Request.PathValue(StaticWildcardParam) != "" {
+						e.Response.Header().Set("Cache-Control", "max-age=1209600, stale-while-revalidate=86400")
+					}
+
+					return e.Next()
+				}).
+				Bind(apis.Gzip())
 
 			e.Router.POST("/api/photocifu/settings", func(e *core.RequestEvent) error {
 				return e.JSON(http.StatusOK, map[string]bool{"success": true})
