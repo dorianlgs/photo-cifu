@@ -110,6 +110,10 @@ func main() {
 				e.Router.GET("/{path...}", apis.Static(os.DirFS(publicDir), indexFallback))
 			}
 
+			e.Router.POST("/api/photocifu/settings", func(e *core.RequestEvent) error {
+				return e.JSON(http.StatusOK, map[string]bool{"success": true})
+			}).Bind(apis.RequireAuth())
+
 			return e.Next()
 		},
 		Priority: 999, // execute as latest as possible to allow users to provide their own route
