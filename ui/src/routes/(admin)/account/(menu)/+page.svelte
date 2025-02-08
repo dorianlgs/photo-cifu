@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-	import { currentUser } from '$lib/stores/user';
 	import { getContext, onMount } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase';
@@ -17,18 +16,17 @@
 		});
 
 		galleries = _galleries;
-
-		// const result = await pb.send('/api/photocifu/settings', {
-		// 	method: 'POST'
-		// });
 	});
 </script>
 
 <svelte:head>
-	<title>Account</title>
+	<title>Client Galleries</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold mb-1">Client Galleries - {$currentUser?.name}</h1>
+<h1 class="text-2xl font-bold mb-1">Client Galleries</h1>
+<a href="/account/gallery/new"
+	><button class="btn btn-outline btn-primary mt-3 btn-wide">New</button></a
+>
 
 <div class="overflow-x-auto">
 	<table class="table">

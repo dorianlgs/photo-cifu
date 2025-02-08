@@ -1,13 +1,13 @@
 <script>
-	let { errors } = $props();
+	let { errors, name, placeholder } = $props();
 </script>
 
 <input
-	id={'avatar'}
-	name={'avatar'}
+	id={name}
+	{name}
 	type={'file'}
-	placeholder={'Upload an avatar'}
-	class="{errors['avatar'] ? 'input-error' : ''} input-md"
+	{placeholder}
+	class="{errors[name] ? 'input-error' : ''} input-md"
 />
 
 <style>

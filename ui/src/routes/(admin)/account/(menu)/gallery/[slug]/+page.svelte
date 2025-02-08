@@ -45,6 +45,7 @@
 			</div>
 		{/each}
 	</div>
+	<a href="/account"><button class="btn btn-outline btn-primary mt-3 btn-wide">Back</button></a>
 {/if}
 
 <style>

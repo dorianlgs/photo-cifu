@@ -120,7 +120,7 @@
 				</div>
 			{/if}
 		</div>
-		<InputFile {errors} />
+		<InputFile {errors} placeholder={'Upload an avatar'} name={'avatar'} />
 
 		<br />
 	</label>

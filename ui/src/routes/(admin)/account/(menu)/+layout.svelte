@@ -2,6 +2,7 @@
 	import type AuthRecord from 'pocketbase';
 	import { pb } from '$lib/pocketbase';
 	import { goto } from '$app/navigation';
+	import { currentUser } from '$lib/stores/user';
 
 	import '../../../../app.css';
 	import { writable } from 'svelte/store';
@@ -74,7 +75,7 @@
 			<ul class="menu menu-lg p-4 w-80 min-h-full bg-base-100 lg:border-r text-primary">
 				<li>
 					<div class="normal-case menu-title text-xl font-bold text-primary flex flex-row">
-						<a href="/" class="grow">{WebsiteName}</a>
+						<a href="/" class="grow">{WebsiteName} - {$currentUser?.name}</a>
 						<label for="admin-drawer" class="lg:hidden ml-3"> &#x2715; </label>
 					</div>
 				</li>
@@ -86,14 +87,27 @@
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
-							><path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-							/></svg
 						>
-						Home
+							<path
+								d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+							/>
+							<path
+								d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6"
+								stroke="currentColor"
+								stroke-width="1.5"
+							/>
+							<circle cx="17.5" cy="9.9375" r="1.5" stroke="currentColor" stroke-width="1.5" />
+							<path
+								d="M2 13.9376L3.75159 12.405C4.66286 11.6077 6.03628 11.6534 6.89249 12.5096L11.1822 16.7993C11.8694 17.4866 12.9512 17.5803 13.7464 17.0214L14.0446 16.8119C15.1888 16.0077 16.7369 16.1009 17.7765 17.0365L21 19.9376"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+							/>
+						</svg>
+						Galleries
 					</a>
 				</li>
 				<li>
