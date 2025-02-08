@@ -116,7 +116,10 @@ func main() {
 					Bind(apis.Gzip())
 			}
 
-			workflowBackend := sqlite.NewSqliteBackend("pb_data/wofkflow.db", sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
+			baseDir, _ := inspectRuntime()
+			workflowDBPath := filepath.Join(baseDir, "pb_data", "wofkflow.db")
+
+			workflowBackend := sqlite.NewSqliteBackend(workflowDBPath, sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
 
 			workflowClient := client.New(workflowBackend)
 
@@ -182,4 +185,17 @@ func defaultPublicDir() string {
 	}
 
 	return filepath.Join(os.Args[0], "../pb_public")
+}
+
+func inspectRuntime() (baseDir string, withGoRun bool) {
+	if strings.HasPrefix(os.Args[0], os.TempDir()) {
+		// probably ran with go run
+		withGoRun = true
+		baseDir, _ = os.Getwd()
+	} else {
+		// probably ran with go build
+		withGoRun = false
+		baseDir = filepath.Dir(os.Args[0])
+	}
+	return
 }
