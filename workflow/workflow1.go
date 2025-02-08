@@ -31,19 +31,37 @@ func Workflow1(ctx workflow.Context, input string) error {
 
 	logger.Info("Waiting signal test")
 
+	tctx, cancel := workflow.WithCancel(ctx)
+
+	timerFired := false
+
 	workflow.Select(ctx,
+		workflow.Await(workflow.ScheduleTimer(tctx, 60*time.Second), func(ctx workflow.Context, f workflow.Future[any]) {
+			if _, err := f.Get(ctx); err != nil {
+				logger.Info("Timer canceled")
+			} else {
+				logger.Info("Timer fired")
+				timerFired = true
+			}
+		}),
 		workflow.Receive(workflow.NewSignalChannel[int](ctx, "test"), func(ctx workflow.Context, r int, ok bool) {
 			logger.Info("Received signal:", "r", r)
+
+			cancel()
 		}),
 	)
 
-	r2, err := workflow.ExecuteActivity[int](ctx, workflow.DefaultActivityOptions, a.Activity2).Get(ctx)
-	if err != nil {
-		logger.Error("Error from Activity 2", "err", err)
-		return fmt.Errorf("getting result from activity 2: %w", err)
+	if timerFired {
+		r2, err := workflow.ExecuteActivity[int](ctx, workflow.DefaultActivityOptions, a.Activity2).Get(ctx)
+		if err != nil {
+			logger.Error("Error from Activity 2", "err", err)
+			return fmt.Errorf("getting result from activity 2: %w", err)
+		}
+
+		logger.Info("A2", "result", r2)
 	}
 
-	logger.Info("A2", "result", r2)
+	logger.Info("Workflow finished")
 
 	return nil
 }

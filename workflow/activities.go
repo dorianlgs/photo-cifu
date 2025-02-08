@@ -36,7 +36,7 @@ func (act *activities) Activity1(ctx context.Context, x, y int) (int, error) {
 func (act *activities) Activity2(ctx context.Context) (int, error) {
 
 	logger := activity.Logger(ctx)
-	logger.Info("Entering Activity2")
+	logger.Info("Enviar recordatorio por correo")
 
 	time.Sleep(3 * time.Second)
 
