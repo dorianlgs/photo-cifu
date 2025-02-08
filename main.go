@@ -111,16 +111,10 @@ func main() {
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(e *core.ServeEvent) error {
 
-			e.Router.GET("/{path...}", apis.Static(ui.DistDirFS, false)).
-				BindFunc(func(e *core.RequestEvent) error {
-					// ignore root path
-					if e.Request.PathValue(StaticWildcardParam) != "" {
-						e.Response.Header().Set("Cache-Control", "max-age=1209600, stale-while-revalidate=86400")
-					}
-
-					return e.Next()
-				}).
-				Bind(apis.Gzip())
+			if !e.Router.HasRoute(http.MethodGet, "/{path...}") {
+				e.Router.GET("/{path...}", apis.Static(ui.DistDirFS, indexFallback)).
+					Bind(apis.Gzip())
+			}
 
 			workflowBackend := sqlite.NewSqliteBackend("pb_data/wofkflow.db", sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
 
