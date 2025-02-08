@@ -108,8 +108,6 @@ func main() {
 		Dir:          migrationsDir,
 	})
 
-	// static route to serves files from the provided public dir
-	// (if publicDir exists and the route path is not already defined)
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(e *core.ServeEvent) error {
 
@@ -124,24 +122,52 @@ func main() {
 				}).
 				Bind(apis.Gzip())
 
+			workflowBackend := sqlite.NewSqliteBackend("pb_data/wofkflow.db", sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
+
+			workflowClient := client.New(workflowBackend)
+
+			ctx := context.Background()
+
+			go workflow.RunWorker(ctx, workflowBackend, app)
+
 			e.Router.POST("/api/photocifu/settings", func(e *core.RequestEvent) error {
 				return e.JSON(http.StatusOK, map[string]bool{"success": true})
 			}).Bind(apis.RequireAuth())
 
-			ctx := context.Background()
+			e.Router.POST("/api/photocifu/signal/send", func(e *core.RequestEvent) error {
 
-			b := sqlite.NewSqliteBackend("pb_data/wofkflow.db", sqlite.WithBackendOptions(backend.WithLogger(app.Logger())))
+				// alternatively, read the body via the parsed request info
+				info, err := e.RequestInfo()
+				if err != nil {
+					return e.BadRequestError("Failed to read request data", err)
+				}
 
-			go workflow.RunWorker(ctx, b)
+				InstanceID, ok := info.Body["instanceId"].(string)
 
-			c := client.New(b)
+				if !ok {
+					return e.BadRequestError("Failed to read instanceId", nil)
+				}
 
-			_, err := c.CreateWorkflowInstance(ctx, client.WorkflowInstanceOptions{
-				InstanceID: uuid.NewString(),
-			}, workflow.Workflow1, "input-for-workflow")
-			if err != nil {
-				panic("could not start workflow")
-			}
+				ctx := context.Background()
+
+				workflowClient.SignalWorkflow(ctx, InstanceID, "test", 42)
+
+				return e.JSON(http.StatusOK, map[string]bool{"success": true})
+			}).Bind(apis.RequireAuth())
+
+			e.Router.POST("/api/photocifu/workflow/create", func(e *core.RequestEvent) error {
+
+				instanceId := uuid.NewString()
+
+				_, err := workflowClient.CreateWorkflowInstance(ctx, client.WorkflowInstanceOptions{
+					InstanceID: instanceId,
+				}, workflow.Workflow1, "input-for-workflow")
+				if err != nil {
+					return e.BadRequestError("Could not start workflow", err)
+				}
+
+				return e.JSON(http.StatusOK, map[string]any{"success": true, "instanceId": instanceId})
+			}).Bind(apis.RequireAuth())
 
 			return e.Next()
 		},
