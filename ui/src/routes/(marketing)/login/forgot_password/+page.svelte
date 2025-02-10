@@ -8,7 +8,9 @@
 	let emailInput: HTMLInputElement | undefined = $state();
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		loading = true;
+		e.preventDefault();
+		errors = {};
+
 		const formData = new FormData(e.target as HTMLFormElement);
 
 		const email = formData.get('email')?.toString() ?? '';
@@ -20,7 +22,12 @@
 			errors['email'] = 'Invalid email';
 		}
 
+		if (Object.keys(errors).length > 0) {
+			return;
+		}
+
 		try {
+			loading = true;
 			await pb.collection('users').requestPasswordReset(email);
 		} catch (err: any) {
 		} finally {

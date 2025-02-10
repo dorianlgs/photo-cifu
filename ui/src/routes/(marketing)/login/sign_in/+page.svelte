@@ -11,7 +11,9 @@
 	let emailInput: HTMLInputElement | undefined = $state();
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		loading = true;
+		e.preventDefault();
+		errors = {};
+
 		const formData = new FormData(e.target as HTMLFormElement);
 
 		const email = formData.get('email')?.toString() ?? '';
@@ -27,7 +29,12 @@
 			errors['password'] = 'Password too long';
 		}
 
+		if (Object.keys(errors).length > 0) {
+			return;
+		}
+
 		try {
+			loading = true;
 			await pb.collection('users').authWithPassword(email, password);
 			if (!pb?.authStore?.record) {
 				pb.authStore.clear();
@@ -58,6 +65,24 @@
 <svelte:head>
 	<title>Sign in</title>
 </svelte:head>
+
+{#if page.url.searchParams.get('password_changed') === 'true'}
+	<div role="alert" class="alert alert-success mb-5">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			class="stroke-current shrink-0 h-6 w-6"
+			fill="none"
+			viewBox="0 0 24 24"
+			><path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+			/></svg
+		>
+		<span>Password updated successfully</span>
+	</div>
+{/if}
 
 {#if page.url.searchParams.get('verified') === 'true'}
 	<div role="alert" class="alert alert-success mb-5">

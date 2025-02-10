@@ -11,23 +11,53 @@
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		try {
-			loading = true;
 			e.preventDefault();
 			errors = {};
 
 			const formData = new FormData(e.target as HTMLFormElement);
 
-			const _email = formData.get('email') as string;
+			const email = formData.get('email')?.toString() ?? '';
+			if (email.length < 6) {
+				errors['email'] = 'Email is required';
+			} else if (email.length > 500) {
+				errors['email'] = 'Email too long';
+			} else if (!email.includes('@') || !email.includes('.')) {
+				errors['email'] = 'Invalid email';
+			}
 
+			const name = formData.get('name')?.toString() ?? '';
+			if (name.length < 2) {
+				errors['name'] = 'Name is required';
+			}
+			if (name.length > 500) {
+				errors['name'] = 'Name too long';
+			}
+
+			const password = formData.get('password')?.toString() ?? '';
+			if (password.length > 500) {
+				errors['password'] = 'Password too long';
+			}
+
+			const avatar = formData.get('avatar') as File;
+
+			if (avatar?.size === 0) {
+				errors['avatar'] = 'Avatar is required';
+			}
+
+			if (Object.keys(errors).length > 0) {
+				return;
+			}
+
+			loading = true;
 			await pb.collection('users').create({
-				email: _email,
-				name: formData.get('name'),
-				password: formData.get('password'),
-				passwordConfirm: formData.get('password'),
-				avatar: formData.get('avatar')
+				email: email,
+				name: name,
+				password: password,
+				passwordConfirm: password,
+				avatar: avatar
 			});
 
-			await pb.collection('users').requestVerification(_email);
+			await pb.collection('users').requestVerification(email);
 
 			goto(`/login/sign_in?not_verified=true`);
 		} catch (err) {
