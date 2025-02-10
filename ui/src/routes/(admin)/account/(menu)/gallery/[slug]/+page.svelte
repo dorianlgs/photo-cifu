@@ -2,7 +2,7 @@
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { pb } from '$lib/pocketbase';
 	import type { RecordModel } from 'pocketbase';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/state';
 	import LikeButton from '$lib/components/LikeButton.svelte';
 
@@ -17,11 +17,23 @@
 
 	let gallery: RecordModel | undefined = $state();
 	let images: Image[] = $state([]);
+	let unsubscribe: () => void;
 
 	onMount(async () => {
 		const _gallery = await pb.collection('galleries').getOne(galleryId, { expand: 'images' });
 		gallery = _gallery;
 		images = gallery?.expand?.images;
+
+		unsubscribe = await pb.collection('images').subscribe('*', async ({ action, record }) => {
+			if (action === 'update') {
+				var foundIndex = images.findIndex((x) => x.id == record.id);
+				images[foundIndex] = { ...images[foundIndex], likes: record.likes };
+			}
+		});
+	});
+
+	onDestroy(() => {
+		unsubscribe?.();
 	});
 </script>
 
