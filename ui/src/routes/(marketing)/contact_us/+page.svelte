@@ -53,9 +53,7 @@
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		try {
-			loading = true;
 			e.preventDefault();
-
 			errors = {};
 
 			const formData = new FormData(e.target as HTMLFormElement);
@@ -103,6 +101,8 @@
 			if (Object.keys(errors).length > 0) {
 				return;
 			}
+
+			loading = true;
 		} catch (err) {
 		} finally {
 			loading = false;
