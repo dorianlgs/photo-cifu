@@ -22,12 +22,14 @@
 	onMount(async () => {
 		const _gallery = await pb.collection('galleries').getOne(galleryId, { expand: 'images' });
 		gallery = _gallery;
-		images = gallery?.expand?.images;
+		let _images = gallery?.expand?.images;
+		images = _images.sort((a: Image, b: Image) => b.likes - a.likes);
 
 		unsubscribe = await pb.collection('images').subscribe('*', async ({ action, record }) => {
 			if (action === 'update') {
 				var foundIndex = images.findIndex((x) => x.id == record.id);
 				images[foundIndex] = { ...images[foundIndex], likes: record.likes };
+				images = _images.sort((a: Image, b: Image) => b.likes - a.likes);
 			}
 		});
 	});
