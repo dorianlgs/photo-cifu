@@ -43,12 +43,11 @@
 			await pb
 				.collection('users')
 				.confirmPasswordReset(resetToken, newPassword, newPasswordConfirm);
+			loading = false;
+			goto(`/login/sign_in?password_changed=true`);
 		} catch (err: any) {
-		} finally {
 			loading = false;
 		}
-
-		goto(`/login/sign_in?password_changed=true`);
 	};
 
 	onMount(() => {

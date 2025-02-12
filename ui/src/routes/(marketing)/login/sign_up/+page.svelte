@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { pb } from '$lib/pocketbase';
 	import GitHubButton from '$lib/components/GitHubButton.svelte';
+	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import InputFile from '$lib/components/InputFile.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -58,10 +59,9 @@
 			});
 
 			await pb.collection('users').requestVerification(email);
-
+			loading = false;
 			goto(`/login/sign_in?not_verified=true`);
 		} catch (err) {
-		} finally {
 			loading = false;
 		}
 	};
@@ -76,6 +76,9 @@
 </svelte:head>
 
 <h1 class="text-2xl font-bold mb-6">Sign Up</h1>
+<GoogleButton />
+<hr class="solid" />
+<br />
 <GitHubButton />
 <br />
 <hr class="solid" />

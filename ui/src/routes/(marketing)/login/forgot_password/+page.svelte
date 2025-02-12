@@ -29,8 +29,8 @@
 		try {
 			loading = true;
 			await pb.collection('users').requestPasswordReset(email);
+			loading = false;
 		} catch (err: any) {
-		} finally {
 			loading = false;
 		}
 

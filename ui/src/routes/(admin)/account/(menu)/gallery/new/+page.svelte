@@ -48,14 +48,15 @@
 				return;
 			}
 
+			loading = true;
 			const result = await pb.send('/api/photocifu/gallery/create', {
 				method: 'POST',
 				body: formData
 			});
+			loading = false;
 
 			goto(`/account/gallery/${result.galleryId}`);
 		} catch (err) {
-		} finally {
 			loading = false;
 		}
 	};

@@ -104,7 +104,6 @@
 
 			loading = true;
 		} catch (err) {
-		} finally {
 			loading = false;
 		}
 	};

@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import GitHubButton from '$lib/components/GitHubButton.svelte';
 	import { onMount } from 'svelte';
+	import GoogleButton from '$lib/components/GoogleButton.svelte';
 
 	let errors: { [fieldName: string]: string } = $state({});
 	let loading = $state(false);
@@ -36,25 +37,29 @@
 		try {
 			loading = true;
 			await pb.collection('users').authWithPassword(email, password);
-			if (!pb?.authStore?.record) {
-				pb.authStore.clear();
-				return {
-					notVerified: true
-				};
+			loading = false;
+
+			if (pb.authStore.isValid) {
+				goto('/account');
 			}
 		} catch (err: any) {
+			loading = false;
 			if (err instanceof ClientResponseError) {
+				const mfaId = err.response?.mfaId;
+
+				if (mfaId) {
+					const result = await pb.collection('users').requestOTP(email);
+
+					if (result.otpId) {
+						goto(`/login/otp_input?otpId=${result.otpId}&mfaId=${mfaId}`);
+					}
+				}
+
 				if (err.response.message === 'Failed to authenticate.') {
 					errors['loginResult'] = 'The Email or Password is Incorrect. Try again.';
 				}
 			}
-
-			return;
-		} finally {
-			loading = false;
 		}
-
-		goto('/account');
 	};
 
 	onMount(() => {
@@ -136,6 +141,9 @@
 	</div>
 {/if}
 <h1 class="text-2xl font-bold mb-6">Sign In</h1>
+<GoogleButton />
+<hr class="solid" />
+<br />
 <GitHubButton />
 <br />
 <hr class="solid" />

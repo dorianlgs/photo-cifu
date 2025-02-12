@@ -19,8 +19,8 @@
 			await pb.collection('images').update(image.id, {
 				likes: newLikes
 			});
+			loading = false;
 		} catch (err) {
-		} finally {
 			loading = false;
 		}
 	}

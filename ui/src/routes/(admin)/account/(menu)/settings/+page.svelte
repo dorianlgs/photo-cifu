@@ -56,11 +56,11 @@
 />
 
 <SettingsModule
-	title="Password"
+	title="Security"
 	editable={false}
 	fields={[{ id: 'password', initialValue: '••••••••••••••••' }]}
-	editButtonTitle="Change Password"
-	editLink="/account/settings/change_password"
+	editButtonTitle="Change Security Settings"
+	editLink="/account/settings/security"
 />
 
 <SettingsModule

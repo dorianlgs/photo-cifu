@@ -8,9 +8,12 @@
 		try {
 			loading = true;
 			await pb.collection('users').authWithOAuth2({ provider: 'github' });
-			goto('/account');
+			loading = false;
+
+			if (pb.authStore.isValid) {
+				goto('/account');
+			}
 		} catch (err) {
-		} finally {
 			loading = false;
 		}
 	}

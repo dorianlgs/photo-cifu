@@ -31,13 +31,13 @@
 				const index = Fuse.parseIndex(searchData.index);
 				fuse = new Fuse<Result>(searchData.indexData, fuseOptions, index);
 			}
+			loading = false;
 		} catch (e) {
 			console.error('Failed to load search data', e);
 			error = true;
-		} finally {
 			loading = false;
-			document.getElementById('search-input')?.focus();
 		}
+		document.getElementById('search-input')?.focus();
 	});
 
 	type Result = {
