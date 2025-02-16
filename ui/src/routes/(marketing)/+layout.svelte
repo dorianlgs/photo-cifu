@@ -80,16 +80,5 @@
 				>Github</a
 			>
 		</nav>
-		<aside>
-			<span class="footer-title opacity-80">Sponsor</span>
-			<a class="max-w-[260px]" href="https://getkiln.ai">
-				<div class="font-bold text-3xl mb-1">Kiln AI</div>
-				<div class="font-medium mb-3">Build High Quality AI Products</div>
-				<div class="font-light">
-					Use advanced AI tactics, and collaborate with your team. Free apps for Mac and Windows.
-				</div>
-				<div class="link text-sm font-bold mt-2">Learn More</div>
-			</a>
-		</aside>
 	</footer>
 </div>
