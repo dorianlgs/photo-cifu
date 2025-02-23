@@ -16,7 +16,7 @@ go run . serve
 
 ```bash
 go generate ./...
-GOOS=linux GOARCH=amd64 go build
+GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
 ./photo-cifu serve
 ```
 

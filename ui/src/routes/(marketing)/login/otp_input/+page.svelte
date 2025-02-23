@@ -73,7 +73,7 @@
 			name={'emailCode'}
 			autocomplete={'off'}
 			placeholder={'Your email code'}
-			class="{errors['email']
+			class="{errors['emailCode']
 				? 'input-error'
 				: ''} input-md mt-1 input input-bordered w-full mb-3 text-base py-4"
 		/>
