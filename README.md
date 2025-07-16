@@ -22,7 +22,7 @@ GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
 
 ## Module creation
 ```bash
-go mod init github.com/shujink0/photo-cifu
+go mod init github.com/dorianlgs/photo-cifu
 ```
 
 ## Update All Go Modules

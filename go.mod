@@ -1,4 +1,4 @@
-module github.com/shujink0/photo-cifu
+module github.com/dorianlgs/photo-cifu
 
 go 1.24
 

@@ -8,11 +8,11 @@ import (
 	"github.com/cschleiden/go-workflows/backend"
 	"github.com/cschleiden/go-workflows/backend/sqlite"
 	"github.com/cschleiden/go-workflows/client"
+	"github.com/dorianlgs/photo-cifu/tools"
+	"github.com/dorianlgs/photo-cifu/workflow"
 	"github.com/google/uuid"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/shujink0/photo-cifu/tools"
-	"github.com/shujink0/photo-cifu/workflow"
 )
 
 func New(app *pocketbase.PocketBase, workflowDbName string) *client.Client {

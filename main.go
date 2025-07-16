@@ -12,9 +12,9 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 
-	"github.com/shujink0/photo-cifu/services"
-	"github.com/shujink0/photo-cifu/tools"
-	"github.com/shujink0/photo-cifu/ui"
+	"github.com/dorianlgs/photo-cifu/services"
+	"github.com/dorianlgs/photo-cifu/tools"
+	"github.com/dorianlgs/photo-cifu/ui"
 )
 
 const StaticWildcardParam = "path"
