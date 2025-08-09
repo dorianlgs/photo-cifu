@@ -2,24 +2,20 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/jsvm"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 
-	"github.com/dorianlgs/photo-cifu/services"
+	"github.com/dorianlgs/photo-cifu/pkg/container"
+	"github.com/dorianlgs/photo-cifu/pkg/handlers"
 	"github.com/dorianlgs/photo-cifu/tools"
 	"github.com/dorianlgs/photo-cifu/ui"
 )
 
-const StaticWildcardParam = "path"
-
-const workflowDbName = "workflow.db"
 
 func main() {
 	app := pocketbase.New()
@@ -107,27 +103,17 @@ func main() {
 
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(e *core.ServeEvent) error {
+			// Initialize dependency injection container
+			appContainer := container.New(app)
 
-			workflowClient := services.New(app, workflowDbName)
+			// Initialize handlers with container
+			appHandlers := handlers.New(appContainer)
 
-			if !e.Router.HasRoute(http.MethodGet, "/{path...}") {
-				e.Router.GET("/{path...}", apis.Static(ui.DistDirFS, indexFallback)).
-					Bind(apis.Gzip())
-			}
+			// Register static routes
+			handlers.RegisterStaticRoutes(e.Router, ui.DistDirFS, indexFallback)
 
-			e.Router.POST("/api/photocifu/settings", services.Settings).Bind(apis.RequireAuth())
-
-			e.Router.POST("/api/photocifu/gallery/create", func(e *core.RequestEvent) error {
-				return services.CreateGallery(e, app)
-			}).Bind(apis.RequireAuth())
-
-			e.Router.POST("/api/photocifu/signal/send", func(e *core.RequestEvent) error {
-				return services.SendSignal(e, workflowClient)
-			}).Bind(apis.RequireAuth())
-
-			e.Router.POST("/api/photocifu/workflow/create", func(e *core.RequestEvent) error {
-				return services.CreateWorkflow(e, workflowClient)
-			}).Bind(apis.RequireAuth())
+			// Register API routes
+			appHandlers.RegisterRoutes(e.Router)
 
 			return e.Next()
 		},

@@ -7,61 +7,66 @@ import (
 	"github.com/cschleiden/go-workflows/workflow"
 )
 
-func Workflow1(ctx workflow.Context, input string) error {
+// GalleryProcessingInput represents the input for gallery processing workflow
+type GalleryProcessingInput struct {
+	GalleryID   string `json:"gallery_id"`
+	GalleryName string `json:"gallery_name"`
+	UserEmail   string `json:"user_email"`
+}
 
+func Workflow1(ctx workflow.Context, input GalleryProcessingInput) error {
 	logger := workflow.Logger(ctx)
-
-	logger.Info("WF Init", "input", input)
+	logger.Info("Starting gallery processing workflow", "galleryID", input.GalleryID, "galleryName", input.GalleryName)
 
 	var a *activities
 
-	r1, err := workflow.ExecuteActivity[int](ctx, workflow.ActivityOptions{
+	// Process gallery images
+	processedCount, err := workflow.ExecuteActivity[int](ctx, workflow.ActivityOptions{
 		RetryOptions: workflow.RetryOptions{
-			MaxAttempts:        1,
-			FirstRetryInterval: time.Second * 3,
+			MaxAttempts:        3,
+			FirstRetryInterval: time.Second * 5,
 			BackoffCoefficient: 2,
-		}}, a.Activity1, 35, 12).Get(ctx)
+		},
+	}, a.ProcessGalleryImages, input.GalleryID).Get(ctx)
 
 	if err != nil {
-		logger.Error("Error from Activity 1", "err", err)
-		return fmt.Errorf("getting result from activity 1: %w", err)
+		logger.Error("Failed to process gallery images", "error", err)
+		return fmt.Errorf("failed to process gallery images: %w", err)
 	}
 
-	logger.Info("A1", "result", r1)
+	logger.Info("Gallery images processed", "count", processedCount)
 
-	logger.Info("Waiting signal test")
-
+	// Wait for processing completion signal or timeout
+	logger.Info("Waiting for processing completion signal")
+	
 	tctx, cancel := workflow.WithCancel(ctx)
-
 	timerFired := false
 
 	workflow.Select(ctx,
-		workflow.Await(workflow.ScheduleTimer(tctx, 60*time.Second), func(ctx workflow.Context, f workflow.Future[any]) {
+		workflow.Await(workflow.ScheduleTimer(tctx, 5*time.Minute), func(ctx workflow.Context, f workflow.Future[any]) {
 			if _, err := f.Get(ctx); err != nil {
-				logger.Info("Timer canceled")
+				logger.Info("Processing timer canceled")
 			} else {
-				logger.Info("Timer fired")
+				logger.Info("Processing timeout reached")
 				timerFired = true
 			}
 		}),
-		workflow.Receive(workflow.NewSignalChannel[int](ctx, "test"), func(ctx workflow.Context, r int, ok bool) {
-			logger.Info("Received signal:", "r", r)
-
+		workflow.Receive(workflow.NewSignalChannel[map[string]interface{}](ctx, "processing_complete"), func(ctx workflow.Context, data map[string]interface{}, ok bool) {
+			logger.Info("Received processing completion signal", "data", data)
 			cancel()
 		}),
 	)
 
+	// Send notification email if timeout occurred
 	if timerFired {
-		r2, err := workflow.ExecuteActivity[int](ctx, workflow.DefaultActivityOptions, a.Activity2).Get(ctx)
+		_, err := workflow.ExecuteActivity[any](ctx, workflow.DefaultActivityOptions, a.SendNotificationEmail, input.GalleryName, input.UserEmail).Get(ctx)
 		if err != nil {
-			logger.Error("Error from Activity 2", "err", err)
-			return fmt.Errorf("getting result from activity 2: %w", err)
+			logger.Error("Failed to send notification email", "error", err)
+			return fmt.Errorf("failed to send notification email: %w", err)
 		}
-
-		logger.Info("A2", "result", r2)
+		logger.Info("Notification email sent due to processing timeout")
 	}
 
-	logger.Info("Workflow finished")
-
+	logger.Info("Gallery processing workflow completed", "galleryID", input.GalleryID)
 	return nil
 }
