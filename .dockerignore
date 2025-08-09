@@ -1,0 +1,59 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!CLAUDE.md
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Go development
+*.log
+*.out
+*.test
+*.prof
+vendor/
+
+# Frontend development
+ui/node_modules/
+ui/.svelte-kit/
+ui/dist/
+ui/.env
+ui/.env.local
+ui/.env.production.local
+ui/.env.development.local
+ui/coverage/
+ui/test-results/
+ui/playwright-report/
+ui/.npm
+
+# Build artifacts (keep source, Docker will build)
+photo-cifu
+*.exe
+
+# Development database (let Docker create fresh)
+pb_data/data.db
+pb_data/logs.db
+pb_data/workflow.db
+pb_data/storage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

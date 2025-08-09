@@ -23,7 +23,6 @@ PhotoCifu follows a clean architecture pattern with dependency injection:
 │   ├── errors/            # Centralized error handling
 │   ├── handlers/          # HTTP request handlers
 │   └── validation/        # Input validation
-├── services/              # Legacy services (being migrated)
 ├── workflow/              # Workflow definitions and activities
 ├── tools/                 # Utility functions
 └── ui/                    # SvelteKit frontend

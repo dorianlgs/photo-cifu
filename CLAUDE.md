@@ -15,7 +15,6 @@ PhotoCifu is a photo gallery application built with Go + PocketBase backend and 
 │   ├── errors/            # Centralized error handling with structured responses
 │   ├── handlers/          # Clean HTTP handlers with validation
 │   └── validation/        # Request validation with type safety
-├── services/              # Legacy services (gradually being migrated to pkg/)
 ├── workflow/              # Workflow definitions and activities
 ├── tools/                 # Utility functions and helpers
 ├── ui/                    # SvelteKit frontend with TypeScript
@@ -349,12 +348,44 @@ GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o photo-cifu
 ```
 
 ### Container Deployment (Docker)
-```dockerfile
-FROM alpine:latest
-COPY photo-cifu /usr/local/bin/
-EXPOSE 8090
-CMD ["photo-cifu", "serve", "--http=0.0.0.0:8090"]
+
+**Quick Start with Docker:**
+```bash
+# Build and run with docker-compose (production)
+docker-compose up --build
+
+# Development mode with hot reload
+docker-compose -f docker-compose.dev.yml up --build
+
+# Build Docker image manually
+docker build -t photo-cifu .
+
+# Run with custom port and data persistence
+docker run -d \
+  --name photo-cifu \
+  -p 8091:8090 \
+  -v $(pwd)/pb_data:/app/pb_data \
+  -v $(pwd)/pb_migrations:/app/pb_migrations \
+  -e GALLERY_MAX_FILE_SIZE=209715200 \
+  photo-cifu
 ```
+
+**Docker Configuration:**
+- **Multi-stage build**: Compiles Go application with embedded SvelteKit frontend
+- **Pure Go compilation**: Uses `CGO_ENABLED=0` with modernc.org/sqlite for maximum compatibility
+- **Persistent data**: Volumes for `pb_data/` (database and uploads) and `pb_migrations/`
+- **Environment variables**: All configuration via environment variables
+- **Health checks**: Built-in container health monitoring
+- **Production ready**: Optimized Alpine Linux runtime (~50MB total image size)
+
+**SQLite Driver Choice:**
+- Uses pure Go SQLite port (modernc.org/sqlite) for compilation simplicity
+- Trade-off: 2-3x slower than CGO-based mattn/go-sqlite3, but eliminates build dependencies
+- Optimal for deployment reliability over peak SQLite performance
+
+**Available Docker Compose configurations:**
+- `docker-compose.yml`: Production deployment
+- `docker-compose.dev.yml`: Development with volume mounts and dev mode
 
 ## Key Changes Summary
 
@@ -370,8 +401,7 @@ This refactoring introduced a clean architecture with the following major improv
 7. **Workflow Types**: Proper typed inputs instead of generic strings
 8. **Frontend Config**: Enhanced configuration with environment variable support
 
-### 📋 Migration Guide for Developers
-- **Old services/**: Migrate remaining functions to new `pkg/container/services.go`
+### 📋 Development Guidelines
 - **Direct DB calls**: Use service interfaces instead of direct PocketBase calls
 - **Error handling**: Use `pkg/errors.HandleError()` for consistent responses
 - **Route registration**: Add new routes in `pkg/handlers/routes.go`
