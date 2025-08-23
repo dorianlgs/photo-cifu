@@ -5,10 +5,11 @@ A photo gallery application with workflow-based image processing, built with Go 
 ## Features
 
 - **Photo Gallery Management**: Create galleries by uploading ZIP archives of images
-- **Workflow Engine**: Async image processing with go-workflows
+- **Workflow Engine**: Async image processing with go-workflows v1.2.0+
 - **User Authentication**: JWT-based auth with PocketBase
 - **File Storage**: Automatic thumbnail generation and file management
 - **Responsive Frontend**: SvelteKit with TypeScript and Tailwind CSS
+- **Docker Support**: Production-ready containerization with multi-stage builds
 
 ## Architecture
 
@@ -40,7 +41,7 @@ PhotoCifu follows a clean architecture pattern with dependency injection:
 
 ### Prerequisites
 - Go 1.24+
-- Node.js/Yarn for frontend development
+- Node.js/npm for frontend development
 - SQLite (included with PocketBase)
 
 ### Quick Start
@@ -48,7 +49,7 @@ PhotoCifu follows a clean architecture pattern with dependency injection:
 1. **Install dependencies**:
    ```bash
    go mod tidy
-   cd ui/ && yarn install && cd ..
+   cd ui/ && npm install && cd ..
    ```
 
 2. **Run development server**:
@@ -66,15 +67,19 @@ PhotoCifu follows a clean architecture pattern with dependency injection:
 cd ui/
 
 # Development server with hot reload
-yarn run dev
+npm run dev
 
 # Build production frontend
-yarn run build
+npm run build
 
 # Code quality checks
-yarn run lint
-yarn run format
-yarn run check
+npm run lint
+npm run format
+npm run check
+
+# Testing
+npm run test          # Run tests in watch mode
+npm run test_run      # Run tests once
 ```
 
 ### Build for Production
@@ -202,7 +207,7 @@ cp pb_data/data.db pb_data/backups/backup-$(date +%Y%m%d).db
 - **Port conflicts**: Change port with `--http=0.0.0.0:8091`
 - **File upload limits**: Configure via environment variables
 - **Workflow failures**: Check `pb_data/workflow.db` for state
-- **Frontend build errors**: Run `yarn run check` for TypeScript issues
+- **Frontend build errors**: Run `npm run check` for TypeScript issues
 
 **Development Database Reset**:
 ```bash
@@ -211,6 +216,38 @@ rm pb_data/data.db pb_data/workflow.db
 # Restart server to recreate with migrations
 ```
 
+## Docker Deployment
+
+### Quick Start with Docker
+
+```bash
+# Build and run with docker-compose (production)
+docker-compose up --build
+
+# Development mode with hot reload
+docker-compose -f docker-compose.dev.yml up --build
+
+# Build Docker image manually
+docker build -t photo-cifu .
+
+# Run with custom configuration
+docker run -d \
+  --name photo-cifu \
+  -p 8091:8090 \
+  -v $(pwd)/pb_data:/app/pb_data \
+  -v $(pwd)/pb_migrations:/app/pb_migrations \
+  -e GALLERY_MAX_FILE_SIZE=209715200 \
+  photo-cifu
+```
+
+### Docker Features
+
+- **Multi-stage build**: Compiles Go application with embedded SvelteKit frontend
+- **Pure Go compilation**: Uses modernc.org/sqlite for maximum compatibility
+- **Persistent data**: Volumes for database and file uploads
+- **Environment variables**: Full configuration via environment variables
+- **Production ready**: Optimized Alpine Linux runtime (~50MB image size)
+
 ## Contributing
 
 1. Follow Go and TypeScript best practices
@@ -218,6 +255,7 @@ rm pb_data/data.db pb_data/workflow.db
 3. Add proper validation for all inputs
 4. Include error handling with structured responses
 5. Update tests when adding new features
+6. Run `npm update` and `go get -u -t ./...` to keep dependencies current
 
 ## License
 
