@@ -73,6 +73,8 @@ go run . serve --dev --debug
 
 # Update all dependencies
 go get -u -t ./...
+go mod edit -require=modernc.org/libc@v1.66.3  # Pin to avoid version warnings
+go clean -modcache  # Clear cache if version warnings persist
 go mod tidy
 
 # Build for production
@@ -286,9 +288,10 @@ router.POST("/api/photocifu/my-endpoint", h.MyEndpoint).Bind(apis.RequireAuth())
 - **File upload limits**: Configure via environment variables (`GALLERY_MAX_FILE_SIZE`)
 - **CORS issues**: PocketBase handles CORS automatically for API calls
 - **Build failures**: Ensure `go generate ./...` runs successfully
-- **Frontend build errors**: Check TypeScript errors with `yarn run check`
+- **Frontend build errors**: Check TypeScript errors with `npm run check`
 - **Container/Service issues**: Check dependency injection wiring in `pkg/container/`
 - **Validation failures**: Verify request structures in `pkg/validation/`
+- **modernc.org/libc version warnings**: Pin to v1.66.3 with `go mod edit -require=modernc.org/libc@v1.66.3` then run `go clean -modcache && go mod tidy`
 
 ### Development Database Reset
 ```bash
@@ -413,3 +416,4 @@ This refactoring introduced a clean architecture with the following major improv
 - Handle errors with structured `pkg/errors/` types
 - Follow the handler → service → validation pattern for new endpoints
 - Use environment variables for configuration instead of hardcoded values
+- IMPORTANT: use only npm
